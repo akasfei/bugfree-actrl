@@ -1,4 +1,5 @@
-var db = new require('../lib/Db.js')();
+var Db = require('../lib/Db.js');
+var db = new Db();
 
 function Subject(name, password, desc) {
   var hash = require('crypto').createHash('sha1');
@@ -8,8 +9,16 @@ function Subject(name, password, desc) {
   return this;
 }
 
+Subject.prototype.create = function(callback) {
+  var self = this;
+  db.insert(self, 'Subjects', {}, function (err) {
+    callback(err);
+    return self;
+  });
+};
+
 Subject.prototype.auth = function(callback) {
-  db.find({name: this.name, password = this.password}, 'Subjects', {limit: 1}, function (err, docs) {
+  db.find({name: this.name, password: this.password}, 'Subjects', {limit: 1}, function (err, docs) {
     if (err)
       return callback(err);
     else if (docs.length < 1) {
