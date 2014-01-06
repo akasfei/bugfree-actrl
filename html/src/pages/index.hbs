@@ -1,3 +1,37 @@
-<div class="container">
-
+<div class="container cbg">
+  <h3>Available objects</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Access rights</th>
+        <th>OPS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Lorem</td>
+        <td>Ispum</td>
+        <td>c+r+w+x+</td>
+        <td>
+          <a href="#" class="btn btn-sm btn-info obj-edit"><i class="glyphicon glyphicon-pencil"></i></a>
+          <a href="#" class="btn btn-sm btn-danger obj-remove"><i class="glyphicon glyphicon-remove"></i></a>
+        </td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>
+          <input type="text" class="form-control" id="new_obj_name" name="new_obj_name" placeholder="Object name">
+        </td>
+        <td colspan="2">
+          <input type="text" class="form-control" id="new_obj_desc" name="new_obj_desc" placeholder="Object description">
+        </td>
+        <td>
+          <a href="#" class="btn btn-primary" id="new_obj_submit"><i class="glyphicon glyphicon-plus"></i></a>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
