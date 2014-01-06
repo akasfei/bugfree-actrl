@@ -50,8 +50,8 @@
         <li>
           <a href="examples.html">Examples</a>
         </li>
-        <li class="active">
-          <a href="">Login</a>
+        <li>
+          <a href="login.html">Login</a>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -91,28 +91,38 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
+      <h3>New subject</h3>
       <form class="form-horizontal" action="">
         
           <div class="form-group">
-  <label for="user_name" class="control-label col-md-3">User name</label>
+  <label for="sbj_name" class="control-label col-md-3">User name</label>
   <div class=" col-md-9">
-    <input class="form-control" type="text" id="user_name" name="user_name" placeholder="User name">
+    <input class="form-control" type="text" id="sbj_name" name="sbj_name" placeholder="User name">
   </div>
 </div>
         
 
         
           <div class="form-group">
-  <label for="password" class="control-label col-md-3">Password</label>
+  <label for="sbj_password" class="control-label col-md-3">Password</label>
   <div class=" col-md-9">
-    <input class="form-control" type="password" id="password" name="password" placeholder="Password">
+    <input class="form-control" type="password" id="sbj_password" name="sbj_password" placeholder="Password">
+  </div>
+</div>
+        
+
+        
+          <div class="form-group">
+  <label for="sbj_desc" class="control-label col-md-3">Description</label>
+  <div class=" col-md-9">
+    <input class="form-control" type="text" id="sbj_desc" name="sbj_desc" placeholder="Description">
   </div>
 </div>
         
 
         <div class="form-group">
           <div class="col-md-10 col-md-offset-2">
-            <a href="#" class="btn btn-primary">Login</a> <a href="#" class="btn btn-default">Register</a>
+            <a href="#" id="subject-register" class="btn btn-default">Register</a>
           </div> 
         </div>
 
@@ -120,6 +130,8 @@
     </div>
   </div>
 </div>
+
+<script src="./js/register.js"></script>
 
     <footer class="well signature">
   <h6>&copy;2013 SFEI Systems Inc.; All Rights Reserved.</h6>
