@@ -2,13 +2,13 @@ var Subject = require('../models/Subject.js');
 
 module.exports = function (app) {
   app.post('/login', function (req, res) {
-    var subject = new Subject(req.body.name, req.body.password);
-    subject.auth(function (err) {
+    req.session.subject = new Subject(req.body.name, req.body.password);
+    req.session.subject.auth(function (err) {
       if (err) {
+        delete req.session.subject;
         res.send(err);
       } else {
-        req.session.subject = subject;
-        res.send({ok: true, name: subject.name, desc: subject.desc});
+        res.send({ok: true, name: req.session.subject.name, desc: req.session.subject.desc});
       }
     });
   });

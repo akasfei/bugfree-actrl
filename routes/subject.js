@@ -18,7 +18,8 @@ module.exports = function (app) {
       if ( typeof req.query.t !== 'undefined' 
         && typeof req.query.o !== 'undefined'
         && typeof req.query.r !== 'undefined' ) {
-        req.session.subject.grant(req.query.t, req.query.o, req.query.r, req.query.c == 'true', function (err) {
+        var subject = new Subject(req.session.subject.name);
+        subject.grant(req.query.t, req.query.o, req.query.r, req.query.c == 'true', function (err) {
           if (err)
             res.send(err);
           return res.status(204).send();
@@ -35,7 +36,8 @@ module.exports = function (app) {
       if ( typeof req.query.t !== 'undefined' 
         && typeof req.query.o !== 'undefined'
         && typeof req.query.r !== 'undefined' ) {
-        req.session.subject.recind(req.query.t, req.query.o, req.query.r, function (err) {
+        var subject = new Subject(req.session.subject.name);
+        subject.recind(req.query.t, req.query.o, req.query.r, function (err) {
           if (err)
             res.send(err);
           return res.status(204).send();

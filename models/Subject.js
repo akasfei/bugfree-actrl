@@ -5,7 +5,8 @@ function Subject(name, password, desc) {
   var hash = require('crypto').createHash('sha1');
   this.name = name;
   this.desc = desc;
-  this.password = hash.update(password, 'utf8').digest('base64');
+  if (typeof password !== 'undefined')
+    this.password = hash.update(password, 'utf8').digest('base64');
   return this;
 }
 
@@ -18,13 +19,14 @@ Subject.prototype.create = function(callback) {
 };
 
 Subject.prototype.auth = function(callback) {
+  var self = this;
   db.find({name: this.name, password: this.password}, 'Subjects', {limit: 1}, function (err, docs) {
     if (err)
       return callback(err);
     else if (docs.length < 1) {
       return callback({err: 'AUTH_FAILED', msg: 'Error: Invalid username or password'});
     } else {
-      this.desc = docs[0].desc;
+      self.desc = docs[0].desc;
       return callback();
     }
   });
@@ -41,25 +43,28 @@ Subject.prototype.newObj = function(objname, desc, callback) {
       x: {}
     }
   };
-  object.c[this.name] = {
+  object.access.c[this.name] = {
     grantors: ['root'],
     cgrantors: ['root']
   };
-  object.r[this.name] = {
+  object.access.r[this.name] = {
     grantors: ['root'],
     cgrantors: ['root']
   };
-  object.w[this.name] = {
+  object.access.w[this.name] = {
     grantors: ['root'],
     cgrantors: ['root']
   };
-  object.x[this.name] = {
+  object.access.x[this.name] = {
     grantors: ['root'],
     cgrantors: ['root']
   };
 
   db.insert(object, 'Objects', {}, function (err) {
-    return callback(err);
+    if (err)
+      return callback(err);
+    else
+      return callback(null, object);
   });
 };
 
