@@ -7,7 +7,7 @@
         sbj_desc: $('#sbj_desc').val()
       }
       if (sbjData.sbj_name.length < 1 || sbjData.sbj_password.length < 1 || sbjData.sbj_desc.length < 1) {
-        alert('Invalid form.');
+        $('.float-msg').msg({msg: 'Invalid form.'});
         return;
       }
       $.ajax({
@@ -17,7 +17,7 @@
         data: sbjData,
         success: function (data, status, xhr) {
           if (data.err) {
-            alert(data.err);
+            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
             return;
           }
           window.location.href = '/index.html';

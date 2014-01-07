@@ -19,6 +19,26 @@ footer.signature {
   background: #fff;
 }
 
+.float-msg {
+  display: none;
+  position: fixed;
+  top: 65px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 1999;
+}
+
+.float-msg.active {
+  display: block;
+}
+
+.float-msg > .alert {
+  display: inline-block;
+  padding: 8px;
+  margin: 0;
+}
+
 .subject-info > .subject-status {
   display: none;
 }
