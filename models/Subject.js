@@ -196,11 +196,11 @@ Subject.prototype.remove = function(object, callback) {
     var obj = docs[0];
 
     if (typeof obj.access['c'][self.name] !== 'undefined') {
-      db.remove({name: object}, {}, function (err) {
+      db.remove({name: obj.name}, 'Objects', {}, function (err) {
         return callback(err);
       });
     } else
-      return callback({err: 'SUBJECT_NOT_AUTHORIZED', msg: 'Error: Current subject is not controler of object \'' + object + '\''});
+      return callback({err: 'SUBJECT_NOT_AUTHORIZED', msg: 'Error: Current subject is not controler of object \'' + obj.name + '\''});
   });
 };
 
@@ -229,12 +229,12 @@ Subject.prototype.write = function(object, newDesc, callback) {
       return callback({err: 'OBJECT_NOT_FOUND', msg: 'Error: Object \'' + object + '\''});
     var obj = docs[0];
 
-    if (typeof object.access['r'][self.name] !== 'undefined') {
-      db.update({name: object}, {$set: {desc: newDesc}}, 'Objects', function (err) { // TODO: look up mongodb docs and verify
+    if (typeof obj.access['r'][self.name] !== 'undefined') {
+      db.update({name: obj.name}, {$set: {desc: newDesc}}, 'Objects', function (err) { // TODO: look up mongodb docs and verify
         return callback(err);
       });
     } else
-      return callback({err: 'SUBJECT_NOT_AUTHORIZED', msg: 'Error: Current subject cannot read object \'' + object + '\''});
+      return callback({err: 'SUBJECT_NOT_AUTHORIZED', msg: 'Error: Current subject cannot read object \'' + obj.name + '\''});
   });
 };
 

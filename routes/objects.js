@@ -68,9 +68,9 @@ module.exports = function (app) {
   app.get('/objects/remove', function (req, res) {
     if (typeof req.session.subject !== 'undefined') {
       var subject = new Subject(req.session.subject.name);
-      subject.remove(req.body.obj_name, function (err) {
+      subject.remove(req.query.n, function (err) {
         if (err)
-          res.send(err);
+          return res.send(err);
         return res.status(204).send();
       });
     } else {
