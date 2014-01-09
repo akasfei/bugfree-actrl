@@ -1,6 +1,7 @@
 var Subject = require('../models/Subject.js');
 var Db = require('../lib/Db.js');
 var ObjView = require('../models/ObjView.js');
+var AccView = require('../models/AccView.js');
 
 module.exports = function (app) {
   app.post('/objects/new', function (req, res) {
@@ -32,6 +33,38 @@ module.exports = function (app) {
           resdata.objects.push(view.render(req.session.subject.name));
         }
         res.send(resdata);
+      });
+    } else {
+      return res.send({err: 'Error: you are not logged in.'});
+    }
+  });
+
+  app.get('/objects/access', function (req, res) {
+    if (typeof req.session.subject !== 'undefined') {
+      var db = new Db();
+      db.find({}, 'Subjects', {}, function (err, subjects) {
+        if (err) {
+          return res.send(err);
+        }
+        if (subjects.length < 1)
+          return res.status(204).send();
+
+        db.find({name: req.query.n}, 'Objects', {limit: 1}, function (err, docs) {
+          if (err)
+            return callback(err);
+          if (docs.length < 1)
+            return callback({err: 'OBJECT_NOT_FOUND', msg: 'Error: Object \'' + req.query.n + '\''});
+          var obj = docs[0];
+
+          var accList = [];
+          var objview = new ObjView(obj);
+
+          for (var i = 0; i < subjects.length; i++) {
+            var view = new AccView(subjects[i].name, objview.renderAccess(subjects[i].name))
+            accList.push(view.render());
+          }
+          res.send({list: accList});
+        });
       });
     } else {
       return res.send({err: 'Error: you are not logged in.'});

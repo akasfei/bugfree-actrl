@@ -36,7 +36,7 @@
         dataType: 'json',
         success: function (data, status, xhr) {
           if (data.err) {
-            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
           window.location.reload();

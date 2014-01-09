@@ -7,7 +7,7 @@
         dataType: 'json',
         success: function (data, status, xhr) {
           if (data.err) {
-            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
           if (status == 204) {
@@ -28,11 +28,31 @@
         dataType: 'json',
         success: function (data, status, xhr) {
           if (data.err) {
-            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
           self.before(data.desc);
           self.remove();
+        }
+      });
+    });
+
+    $('.object-list').on('click', '.obj-access', function (e) {
+      var self = $(this);
+      $('.access-list').attr('data-obj', '');
+      $.ajax({
+        url: '/objects/access',
+        method: 'GET',
+        data: {n: self.parents('tr').attr('data-name')},
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.access-list > tbody').html(data.list.join('\n'));
+          $('.access-list').attr('data-obj', self.parents('tr').attr('data-name'));
+          $('#obj-access-modal').modal('show');
         }
       });
     });
@@ -49,7 +69,7 @@
         dataType: 'json',
         success: function (data, status, xhr) {
           if (data && data.err) {
-            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
           $('.object-list-refresh').trigger('click');
@@ -74,7 +94,7 @@
         dataType: 'json',
         success: function (data, status, xhr) {
           if (data.err) {
-            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
           $('#obj_edit_desc').val(data.desc);
@@ -99,7 +119,7 @@
         dataType: 'json',
         success: function (data, status, xhr) {
           if (data && data.err) {
-            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
           $('#obj-edit-modal').modal('hide');
@@ -123,11 +143,35 @@
         data: obj,
         dataType: 'json',
         success: function (data, status, xhr) {
-          if (data.err) {
-            $('.float-msg').msg({msg: data.err + data.msg ? '\n' + data.msg: ''});
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
           $('.object-list-refresh').trigger('click');
+        }
+      });
+    });
+
+    $('.access-list').on('click', '.access-grant', function (e) {
+      var self = $(this);
+      var rights = self.text().toLowerCase();
+      var query = {
+        t: self.parents('tr').attr('data-name'),
+        o: $('.access-list').attr('data-obj'),
+        r: rights.substr(0, 1),
+        c: rights.substr(1, 1) == '+'? 'true': null
+      }
+      $.ajax({
+        url: '/subjects/grant',
+        method: 'GET',
+        data: query,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully granted right "' + rights + '" to subject "' + query.t + '".', style: 'success'});
         }
       });
     });

@@ -88,18 +88,18 @@ Subject.prototype.grant = function(subject, object, right, giveC, callback) {
       if ( typeof obj.access[right][subject].grantors === 'undefined' 
         || obj.access[right][subject].grantors.length < 1) {
         // If no array is present then create a new one
-        obj.access[right][subject].grantors = [subject];
+        obj.access[right][subject].grantors = [self.name];
         if (giveC)
-          obj.access[right][subject].cgrantors = [subject];
+          obj.access[right][subject].cgrantors = [self.name];
       } else {
         if (obj.access[right][subject].grantors.indexOf(self.name))
           return callback({err: 'SUBJECT_HAS_RIGHT', msg: 'Error: You have already granted subject right \'' + right + '\''});
-        obj.access[right][subject].grantors.push(subject);
+        obj.access[right][subject].grantors.push(self.name);
         if (giveC) {
           if (typeof obj.access[right][subject].cgrantors !== 'undefined')
-            obj.access[right][subject].cgrantors.push(subject);
+            obj.access[right][subject].cgrantors.push(self.name);
           else
-            obj.access[right][subject].cgrantors = [subject];
+            obj.access[right][subject].cgrantors = [self.name];
         }
       }
     } else {
@@ -140,11 +140,11 @@ Subject.prototype.recind = function(subject, object, right, callback) {
         || obj.access[right][subject].grantors.length < 1)
           return callback({err: 'TARGET_NO_ACCESS', msg: 'Error: Target subject does not have right \'' + right + '\''});
       else {
-        var index = obj.access[right][subject].grantors.indexOf(subject);
+        var index = obj.access[right][subject].grantors.indexOf(self.name);
         if (index >= 0) {
           obj.access[right][subject].grantors.splice(index, 1);
           if ( typeof obj.access[right][subject].cgrantors !== 'undefined' 
-            && (index = obj.access[right][subject].cgrantors.indexOf(subject)) >= 0) {
+            && (index = obj.access[right][subject].cgrantors.indexOf(self.name)) >= 0) {
               obj.access[right][subject].cgrantors.splice(index, 1);
               if (obj.access[right][subject].cgrantors.length < 1)
                 recindAll(obj, right, subject);
@@ -229,7 +229,7 @@ Subject.prototype.write = function(object, newDesc, callback) {
       return callback({err: 'OBJECT_NOT_FOUND', msg: 'Error: Object \'' + object + '\''});
     var obj = docs[0];
 
-    if (typeof obj.access['r'][self.name] !== 'undefined') {
+    if (typeof obj.access['w'][self.name] !== 'undefined') {
       db.update({name: obj.name}, {$set: {desc: newDesc}}, 'Objects', function (err) { // TODO: look up mongodb docs and verify
         return callback(err);
       });
