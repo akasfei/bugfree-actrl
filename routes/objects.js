@@ -21,7 +21,7 @@ module.exports = function (app) {
   app.get('/objects/list', function (req, res) {
     if (typeof req.session.subject !== 'undefined') {
       var db = new Db();
-      db.find({}, 'Objects', {}, function (err, objList) {
+      db.find({}, 'Objects', {sort: {'_id': '1'}}, function (err, objList) {
         if (err) {
           return res.send(err);
         }

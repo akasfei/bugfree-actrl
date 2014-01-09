@@ -208,6 +208,54 @@
       });
     });
 
+    $('.access-list').on('click', '.access-ban', function (e) {
+      var self = $(this);
+      var rights = self.text().toLowerCase();
+      var query = {
+        t: self.parents('tr').attr('data-name'),
+        o: $('.access-list').attr('data-obj'),
+        r: rights
+      }
+      $.ajax({
+        url: '/subjects/ban',
+        method: 'GET',
+        data: query,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully added subject"' + query.t + '" to "' + rights + '" blacklist.', style: 'success'});
+          refreshAccess(query.o);
+        }
+      });
+    });
+
+    $('.access-list').on('click', '.access-unban', function (e) {
+      var self = $(this);
+      var rights = self.text().toLowerCase();
+      var query = {
+        t: self.parents('tr').attr('data-name'),
+        o: $('.access-list').attr('data-obj'),
+        r: rights
+      }
+      $.ajax({
+        url: '/subjects/unban',
+        method: 'GET',
+        data: query,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully removed subject "' + query.t + '" from "' + rights + '" blacklist.', style: 'success'});
+          refreshAccess(query.o);
+        }
+      });
+    });
+
     $('#obj-access-refresh').on('click', function (e) {
       refreshAccess($('.access-list').attr('data-obj'));
     });

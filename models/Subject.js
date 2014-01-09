@@ -3,6 +3,8 @@ var db = new Db();
 
 function Subject(name, password, desc) {
   var hash = require('crypto').createHash('sha1');
+  if (name == 'root' || name == 'blacklist')
+    return null;
   this.name = name;
   this.desc = desc;
   if (typeof password !== 'undefined')
@@ -85,6 +87,10 @@ Subject.prototype.grant = function(subject, object, right, giveC, callback) {
         obj.access[right][subject] = {};
       else if (detectCircuit(obj, right, subject, self.name))
         return callback({err: 'GRANT_CIRCUIT', msg: 'Error: You cannot grant right to your right\'s (in)direct grantor.'});
+
+      if (typeof obj.access[right].blacklist !== 'undefined' && obj.access[right].blacklist.indexOf(subject) >= 0)
+        return callback({err: 'SUBJECT_BANNED', msg: 'Error: Target subject is banned.'});
+
       if ( typeof obj.access[right][subject].grantors === 'undefined' 
         || obj.access[right][subject].grantors.length < 1) {
         // If no array is present then create a new one
@@ -92,7 +98,7 @@ Subject.prototype.grant = function(subject, object, right, giveC, callback) {
         if (giveC)
           obj.access[right][subject].cgrantors = [self.name];
       } else {
-        if (obj.access[right][subject].grantors.indexOf(self.name))
+        if (obj.access[right][subject].grantors.indexOf(self.name) >= 0)
           return callback({err: 'SUBJECT_HAS_RIGHT', msg: 'Error: You have already granted subject right \'' + right + '\''});
         obj.access[right][subject].grantors.push(self.name);
         if (giveC) {
@@ -235,6 +241,67 @@ Subject.prototype.write = function(object, newDesc, callback) {
       });
     } else
       return callback({err: 'SUBJECT_NOT_AUTHORIZED', msg: 'Error: Current subject cannot write object \'' + obj.name + '\''});
+  });
+};
+
+Subject.prototype.ban = function(object, target, right, callback) {
+  var self = this;
+  db.find({name: object}, 'Objects', {limit: 1}, function (err, docs) {
+    if (err)
+      return callback(err);
+    if (docs.length < 1)
+      return callback({err: 'OBJECT_NOT_FOUND', msg: 'Error: Object \'' + object + '\''});
+    var obj = docs[0];
+
+    if ( typeof obj.access.c[self.name] !== 'undefined' 
+      && obj.access.c[self.name].grantors.indexOf('root') >= 0) {
+      if ( typeof obj.access[right].blacklist !== 'undefined' 
+        && obj.access[right].blacklist.length > 1 ) {
+        obj.access[right].blacklist.push(target);
+      } else 
+        obj.access[right].blacklist = [target];
+
+      // Need to recind this right
+      if ( typeof obj.access[right][target] !== 'undefined') {
+        if ( typeof obj.access[right][target].cgrantors !== 'undefined'
+          && obj.access[right][target].cgrantors.length > 0)
+          recindAll(obj, right, target);
+        delete obj.access[right][target];
+      }
+      
+      db.update({name: obj.name}, obj, 'Objects', {}, function (err) {
+        return callback(err);
+      });
+    } else
+      return callback({err: 'SUBJECT_NOT_OWNER', msg: 'Error: Current subject is not owner of object \'' + obj.name + '\''});
+  });
+};
+
+Subject.prototype.unban = function(object, target, right, callback) {
+  var self = this;
+  db.find({name: object}, 'Objects', {limit: 1}, function (err, docs) {
+    if (err)
+      return callback(err);
+    if (docs.length < 1)
+      return callback({err: 'OBJECT_NOT_FOUND', msg: 'Error: Object \'' + object + '\''});
+    var obj = docs[0];
+
+    if ( typeof obj.access.c[self.name] !== 'undefined' 
+      && obj.access.c[self.name].grantors.indexOf('root') >= 0) {
+      if ( typeof obj.access[right].blacklist !== 'undefined' 
+        && obj.access[right].blacklist.length > 0 ) {
+        var index = obj.access[right].blacklist.indexOf(target);
+        obj.access[right].blacklist.splice(index, 1);
+        if (obj.access[right].blacklist.length < 1)
+          delete obj.access[right].blacklist;
+      } else 
+        return callback({err: 'BLACKLIST_EMPTY', msg: 'Error: Blacklist of object \'' + obj.name + '\' is empty.'});
+
+      db.update({name: obj.name}, obj, 'Objects', {}, function (err) {
+        return callback(err);
+      });
+    } else
+      return callback({err: 'SUBJECT_NOT_OWNER', msg: 'Error: Current subject is not owner of object \'' + obj.name + '\''});
   });
 };
 

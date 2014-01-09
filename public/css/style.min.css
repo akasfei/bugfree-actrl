@@ -41,6 +41,9 @@ footer.signature {
 .subject-info.active > .subject-login {
   display: none;
 }
+.mono {
+  font-family: "Courier New", courier, monospace;
+}
 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min-device-pixel-ratio: 2) {
   body {
     background: url('../assets/img/bg_@2x.png');
