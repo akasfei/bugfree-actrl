@@ -133,8 +133,8 @@ Subject.prototype.recind = function(subject, object, right, callback) {
     var obj = docs[0];
   
     if (obj.access[right][self.name] && 
-        obj.access[right][self.name][cgrantors] && 
-        obj.access[right][self.name][cgrantors].length > 0) {
+        obj.access[right][self.name].cgrantors && 
+        obj.access[right][self.name].cgrantors.length > 0) {
       if ( typeof obj.access[right][subject] === 'undefined' 
         || typeof obj.access[right][subject].grantors === 'undefined' 
         || obj.access[right][subject].grantors.length < 1)
@@ -152,7 +152,7 @@ Subject.prototype.recind = function(subject, object, right, callback) {
           if (obj.access[right][subject].grantors.length < 1)
             delete obj.access[right][subject];
         } else
-          return callback({err: 'SUBJECT_NOT_GRANTED', msg: 'Error: Target subject does not have right \'' + right + '\''}); 
+          return callback({err: 'SUBJECT_NOT_GRANTOR', msg: 'Error: Target right was not granted by current subject.'}); 
       }
     } else {
       return callback({err: 'SUBJECT_NOT_CTRLER', msg: 'Error: Current subject cannot control right \'' + right + '\''});
@@ -168,7 +168,7 @@ var recindAll = function (obj, right, grantor) {
   for (var subject in obj.access[right]) {
     var index;
     if (typeof obj.access[right][subject].grantors !== 'undefined') {
-      index = obc.access[right][subject].grantors.indexOf(grantor);
+      index = obj.access[right][subject].grantors.indexOf(grantor);
       if (index >= 0) {
         obj.access[right][subject].grantors.splice(index, 1);
         if ( typeof obj.access[right][subject].cgrantors !== 'undefined' 
@@ -230,11 +230,11 @@ Subject.prototype.write = function(object, newDesc, callback) {
     var obj = docs[0];
 
     if (typeof obj.access['w'][self.name] !== 'undefined') {
-      db.update({name: obj.name}, {$set: {desc: newDesc}}, 'Objects', function (err) { // TODO: look up mongodb docs and verify
+      db.update({name: obj.name}, {$set: {desc: newDesc}}, 'Objects', {}, function (err) {
         return callback(err);
       });
     } else
-      return callback({err: 'SUBJECT_NOT_AUTHORIZED', msg: 'Error: Current subject cannot read object \'' + obj.name + '\''});
+      return callback({err: 'SUBJECT_NOT_AUTHORIZED', msg: 'Error: Current subject cannot write object \'' + obj.name + '\''});
   });
 };
 

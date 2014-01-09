@@ -21,7 +21,7 @@ module.exports = function (app) {
         var subject = new Subject(req.session.subject.name);
         subject.grant(req.query.t, req.query.o, req.query.r, req.query.c == 'true', function (err) {
           if (err)
-            res.send(err);
+            return res.send(err);
           return res.status(204).send();
         });
       } else
@@ -39,7 +39,7 @@ module.exports = function (app) {
         var subject = new Subject(req.session.subject.name);
         subject.recind(req.query.t, req.query.o, req.query.r, function (err) {
           if (err)
-            res.send(err);
+            return res.send(err);
           return res.status(204).send();
         });
       } else

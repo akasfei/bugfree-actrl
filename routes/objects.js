@@ -90,7 +90,7 @@ module.exports = function (app) {
       var subject = new Subject(req.session.subject.name);
       subject.write(req.body.obj_name, req.body.obj_new_desc, function (err) {
         if (err)
-          res.send(err);
+          return res.send(err);
         return res.status(204).send();
       });
     } else {
