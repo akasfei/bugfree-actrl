@@ -33,7 +33,7 @@
         data: formData,
         dataType: 'json',
         success: function (data, status, xhr) {
-          if (data.err) {
+          if (data && data.err) {
             $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
@@ -66,7 +66,7 @@
         method: 'GET',
         dataType: 'json',
         success: function (data, status, xhr) {
-          if (data.err) {
+          if (data && data.err) {
             $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
@@ -87,7 +87,7 @@
         data: {n: self.parents('tr').attr('data-name')},
         dataType: 'json',
         success: function (data, status, xhr) {
-          if (data.err) {
+          if (data && data.err) {
             $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
@@ -105,7 +105,7 @@
         data: {n: object},
         dataType: 'json',
         success: function (data, status, xhr) {
-          if (data.err) {
+          if (data && data.err) {
             $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return callback(data);
           }
@@ -160,7 +160,7 @@
         data: {n: $('#obj_edit_name').text()},
         dataType: 'json',
         success: function (data, status, xhr) {
-          if (data.err) {
+          if (data && data.err) {
             $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }

@@ -52,7 +52,7 @@
         <li>
           <a href="register.html">Register</a>
         </li>
-        <li class="dropdown">
+        <li class="dropdown active">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">RBAC <b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a href="rbac-index.html">Index</a></li>
@@ -71,43 +71,108 @@
 </nav>
 
 
-    <div class="jumbotron">
-  <div class="container">
-    <h1>Welcome.</h1>
-  </div>
-</div>
-<div class="container">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <form class="form-horizontal" action="">
-        
-          <div class="form-group">
-  <label for="user_name" class="control-label col-md-3">User name</label>
-  <div class=" col-md-9">
-    <input class="form-control" type="text" id="user_name" name="user_name" placeholder="User name">
-  </div>
-</div>
-        
-
-        
-          <div class="form-group">
-  <label for="password" class="control-label col-md-3">Password</label>
-  <div class=" col-md-9">
-    <input class="form-control" type="password" id="password" name="password" placeholder="Password">
-  </div>
-</div>
-        
-
-        <div class="form-group">
-          <div class="col-md-10 col-md-offset-2">
-            <a href="#" class="btn btn-primary">Login</a> <a href="#" class="btn btn-default">Register</a>
-          </div> 
+    <div class="container user-info">
+  <form class="form-inline user-login" role="form">
+    <div class="form-group">
+      <label class="sr-only" for="name">User Name</label>
+      <input type="email" class="form-control" id="user_name" name="user_name" placeholder="User name">
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="password">Password</label>
+      <input type="password" class="form-control" id="user_password" name="user_password" placeholder="Password">
+    </div>
+    <a href="#" id="user-login" class="btn btn-primary">Login</a>
+  </form>
+  <div class="row user-status">
+    <div class="col-md-12">
+      <h3 id="user-status-name">User Name</h3>
+      <p id="user-status-desc">User Desc</p>
+      <p>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            Session:<span id="user-stats-current-session"></span> <span class="caret"></span>
+          </button>
+          <ul id="user-stats-sessions-dropdown" class="dropdown-menu" role="menu">
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Another action</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li class="divider"></li>
+            <li><a href="#" id="">End Session</a></li>
+          </ul>
         </div>
-
-      </form>
+        <a href="#" id="user-logout" class="btn btn-default">Logout</a>
+      </p>
     </div>
   </div>
 </div>
+
+<div class="container cbg">
+  <h3>Available objects <a href="#" class="btn btn-success object-list-refresh"><i class="glyphicon glyphicon-refresh"></i></a></h3>
+  <table class="table object-list">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Access rights</th>
+        <th>OPS</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>
+          <input type="text" class="form-control" id="new_obj_name" name="new_obj_name" placeholder="Object name">
+        </td>
+        <td colspan="2">
+          <input type="text" class="form-control" id="new_obj_desc" name="new_obj_desc" placeholder="Object description">
+        </td>
+        <td>
+          <a href="#" class="btn btn-primary" id="new_obj_submit"><i class="glyphicon glyphicon-plus"></i></a>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<div class="modal fade" id="obj-edit-modal" tabindex="-1" role="dialog" aria-labelledby="obj-edit-modal-label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="obj-edit-modal-label">Edit object description</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-horizontal">
+          <div class="row">
+            <div class="col-md-3">
+              <p style="text-align:right;"><strong>Object Name</strong></p>
+            </div>
+            <div class="col-md-9">
+              <p id="obj_edit_name">Object Name</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="obj_edit_desc" class="control-label col-md-3">New desc</label>
+            <div class=" col-md-9">
+              <div class="input-group">
+                <input class="form-control" type="text" id="obj_edit_desc" name="obj_edit_desc" placeholder="New description">
+                <span class="input-group-btn">
+                  <button id="obj-edit-getdesc" class="btn btn-default" type="button"><i class="glyphicon glyphicon-download-alt"></i></button>
+                </span>
+              </div><!-- /input-group -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="obj_edit_submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
     <footer class="well signature">
   <h6>&copy;2013 SFEI Systems Inc.; All Rights Reserved.</h6>

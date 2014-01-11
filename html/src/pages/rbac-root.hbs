@@ -1,0 +1,114 @@
+<div class="container">
+  <div class="col-md-6">
+    <div class="input-group">
+      <input id="root-code" type="text" class="form-control">
+      <span class="input-group-btn">
+        <button id="root-auth" class="btn btn-primary" type="button">AUTHENTICATE</button>
+      </span>
+      <span class="input-group-btn">
+        <a href="/rbac/root/logout" class="btn btn-default">LOGOUT</a>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div>
+
+<div class="container cbg">
+  <h3>Objects <a href="#" class="btn btn-success object-list-refresh"><i class="glyphicon glyphicon-refresh"></i></a></h3>
+  <table class="table object-list">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>OPS</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    </tbody>
+    <!--
+    <tfoot>
+      <tr>
+        <td>
+          <input type="text" class="form-control" id="new_obj_name" name="new_obj_name" placeholder="Object name">
+        </td>
+        <td>
+          <input type="text" class="form-control" id="new_obj_desc" name="new_obj_desc" placeholder="Object description">
+        </td>
+        <td>
+          <a href="#" class="btn btn-primary" id="new_obj_submit"><i class="glyphicon glyphicon-plus"></i></a>
+        </td>
+      </tr>
+    </tfoot>
+    -->
+  </table>
+</div>
+
+<div class="container cbg">
+  <h3>Users <a href="#" class="btn btn-success user-list-refresh"><i class="glyphicon glyphicon-refresh"></i></a></h3>
+  <table class="table user-list">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Available Roles</th>
+        <th>OPS</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    </tbody>
+    <!-- 
+    <tfoot>
+      <tr>
+        <td>
+          <input type="text" class="form-control" id="new_usr_name" name="new_usr_name" placeholder="User name">
+        </td>
+        <td>
+          <input type="password" class="form-control" id="new_usr_password" name="new_usr_password" placeholder="Password">
+        </td>
+        <td>
+          <input type="text" class="form-control" id="new_usr_desc" name="new_usr_desc" placeholder="User description">
+        </td>
+        <td>
+          <a href="#" class="btn btn-primary" id="new_usr_submit"><i class="glyphicon glyphicon-plus"></i></a>
+        </td>
+      </tr>
+    </tfoot>
+    -->
+  </table>
+</div>
+
+<div class="container cbg">
+  <h3>Roles <a href="#" class="btn btn-success role-list-refresh"><i class="glyphicon glyphicon-refresh"></i></a></h3>
+  <table class="table role-list">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Extending</th>
+        <th>OPS</th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>
+          <input type="text" class="form-control" id="new_rol_name" name="new_rol_name" placeholder="Role name">
+        </td>
+        <td>
+          <input type="text" class="form-control" id="new_rol_desc" name="new_rol_desc" placeholder="Role description">
+        </td>
+        <td>
+          <input type="text" class="form-control" id="new_rol_ext" name="new_rol_ext" placeholder="Inherit from roles">
+        </td>
+        <td>
+          <a href="#" class="btn btn-primary" id="new_rol_submit"><i class="glyphicon glyphicon-plus"></i></a>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+<script src="./js/app-root.js"></script>
