@@ -38,6 +38,7 @@ app.configure('production', function(){
   app.use(express.errorHandler());
 });
 
+app.db.init();
 // Routes
 var router = new Router().register(app);
 

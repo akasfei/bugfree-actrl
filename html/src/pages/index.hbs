@@ -1,3 +1,24 @@
+<div class="container subject-info">
+  <form class="form-inline subject-login" role="form">
+    <div class="form-group">
+      <label class="sr-only" for="name">Subject Name</label>
+      <input type="email" class="form-control" id="name" name="name" placeholder="Subject name">
+    </div>
+    <div class="form-group">
+      <label class="sr-only" for="password">Password</label>
+      <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+    </div>
+    <a href="#" id="subject-login" class="btn btn-primary">Login</a>
+  </form>
+  <div class="row subject-status">
+    <div class="col-md-12">
+      <a href="#" id="subject-logout" class="btn btn-default pull-right">Logout</a>
+      <h3 id="subject-status-name">Subject Name</h3>
+      <p id="subject-status-desc">Subject Desc</p>
+    </div>
+  </div>
+</div>
+
 <div class="container cbg">
   <h3>Available objects <a href="#" class="btn btn-success object-list-refresh"><i class="glyphicon glyphicon-refresh"></i></a></h3>
   <table class="table object-list">
