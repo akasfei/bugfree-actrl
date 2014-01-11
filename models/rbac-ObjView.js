@@ -22,9 +22,9 @@ ObjView.prototype.renderAccess = function (role) {
   for (var i = 0; i < this.permissions.length; i++) {
     var perm = false;
     if (typeof this.access[this.permissions[i]][role.name] === 'undefined') {
-      if (typeof role.extends !== 'undefined' && role.extends.length > 0) {
-        for (var j = 0; j < role.extends.length; j++) {
-          if (typeof this.access[this.permissions[j]][role.extends[j]] !== 'undefined') {
+      if (typeof role.ext !== 'undefined' && role.ext.length > 0) {
+        for (var j = 0; j < role.ext.length; j++) {
+          if (typeof this.access[this.permissions[j]][role.ext[j]] !== 'undefined') {
             perm = true;
             break;
           }

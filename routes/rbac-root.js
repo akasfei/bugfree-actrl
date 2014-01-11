@@ -4,14 +4,26 @@ var Role = require('../models/rbac-Role.js');
 var Root = require('../models/rbac-Root.js');
 var ObjView = require('../models/rbac-ObjView.js');
 var AccView = require('../models/rbac-AccView.js');
+var UsrView = require('../models/rbac-UsrView.js');
+var RolView = require('../models/rbac-RolView.js');
 
 var root = new Root();
+var db = new Db();
 
 module.exports = function (app) {
   app.post('/rbac/root/auth', function (req, res) {
     if (req.body.code === 'QWERTY') {
       req.session.root = new Date();
       return res.status(201).send();
+    } else {
+      return res.status(403).send();
+    }
+  });
+
+  app.get('/rbac/root/logout', function (req, res) {
+    if (typeof req.session.root !== 'undefined') {
+      delete req.session.root;
+      return res.status(204).send();
     } else {
       return res.status(403).send();
     }
@@ -33,14 +45,36 @@ module.exports = function (app) {
     }
   });
 
-  app.post('/rbac/root/roles/remove', function (req, res) {
+  app.get('/rbac/root/roles/remove', function (req, res) {
     if (typeof req.session.root !== 'undefined') {
-      root.removeRole(req.body.role_name, function (err) {
+      root.removeRole(req.query.n, function (err) {
         if (err) {
           res.send(err);
         } else {
           res.status(201).send();
         }
+      });
+    } else {
+      return res.status(403).send();
+    }
+  });
+
+  app.get('/rbac/root/objects/list', function (req, res) {
+    if (typeof req.session.root !== 'undefined') {
+      db.find({}, 'Objects_rbac', {sort: {'_id': '1'}}, function (err, objList) {
+        if (err) {
+          return res.send(err);
+        }
+        if (objList.length < 1)
+          return res.status(204).send();
+        var resdata = {objects: []};
+        for (var i = 0; i < objList.length; i++) {
+          var view = '<tr data-name="$name"><td>$name</td><td>$desc</td><td>$btns</td></tr>';
+          var btns = '<a href="#" class="btn btn-sm btn-warning obj-access"><i class="glyphicon glyphicon-certificate"></i></a>';
+          view = view.replace(/\$name/g, objList[i].name).replace(/\$desc/g, objList[i].desc).replace(/\$btns/g, btns);
+          resdata.objects.push(view);
+        }
+        res.send(resdata);
       });
     } else {
       return res.status(403).send();
@@ -73,6 +107,46 @@ module.exports = function (app) {
           }
           res.send({list: accList});
         });
+      });
+    } else {
+      return res.status(403).send();
+    }
+  });
+
+  app.get('/rbac/root/users/list', function (req, res) {
+    if (typeof req.session.root !== 'undefined') {
+      db.find({}, 'Users', {sort: {'_id': '1'}}, function (err, usrList) {
+        if (err) {
+          return res.send(err);
+        }
+        if (usrList.length < 1)
+          return res.status(204).send();
+        var resdata = {users: []};
+        for (var i = 0; i < usrList.length; i++) {
+          var view = new UsrView(usrList[i]);
+          resdata.users.push(view.render());
+        }
+        res.send(resdata);
+      });
+    } else {
+      return res.status(403).send();
+    }
+  });
+
+  app.get('/rbac/root/roles/list', function (req, res) {
+    if (typeof req.session.root !== 'undefined') {
+      db.find({}, 'Roles', {sort: {'_id': '1'}}, function (err, rolList) {
+        if (err) {
+          return res.send(err);
+        }
+        if (rolList.length < 1)
+          return res.status(204).send();
+        var resdata = {roles: []};
+        for (var i = 0; i < rolList.length; i++) {
+          var view = new RolView(rolList[i]);
+          resdata.roles.push(view.render());
+        }
+        res.send(resdata);
       });
     } else {
       return res.status(403).send();

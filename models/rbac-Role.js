@@ -17,7 +17,7 @@ Role.prototype.create = function(callback) {
 };
 
 Role.prototype.new = function(objname, desc, callback) {
-  if (typeof this.extends === 'undefined' || this.extends.indexOf('root') < 0)
+  if (typeof this.ext === 'undefined' || this.ext.indexOf('root') < 0)
     return callback({err: 'ROLE_UNAUTHORIZED', msg: 'Error: Role is not authorized to create objects.'});
 
   var object = {
@@ -49,11 +49,11 @@ Role.prototype.remove = function(object, callback) {
     var obj = docs[0];
 
     if (typeof obj.access['c'][self.name] === 'undefined') {
-      if (typeof self.extends === 'undefined')
+      if (typeof self.ext === 'undefined')
         return callback({err: 'ROLE_NOT_AUTHORIZED', msg: 'Error: Current role is not authorized to control object \'' + obj.name + '\''});
       var perm = false;
-      for (var i = 0; i < self.extends; i++) {
-        if (typeof obj.access.c[self.extends[i]] !== 'undefined') {
+      for (var i = 0; i < self.ext; i++) {
+        if (typeof obj.access.c[self.ext[i]] !== 'undefined') {
           perm = true;
           break;
         }
@@ -78,11 +78,11 @@ Role.prototype.read = function(object, callback) {
     var obj = docs[0];
 
     if (typeof obj.access['r'][self.name] === 'undefined') {
-      if (typeof self.extends === 'undefined')
+      if (typeof self.ext === 'undefined')
         return callback({err: 'ROLE_NOT_AUTHORIZED', msg: 'Error: Current role is not authorized to read object \'' + object + '\''});
       var perm = false;
-      for (var i = 0; i < self.extends; i++) {
-        if (typeof obj.access.r[self.extends[i]] !== 'undefined') {
+      for (var i = 0; i < self.ext; i++) {
+        if (typeof obj.access.r[self.ext[i]] !== 'undefined') {
           perm = true;
           break;
         }
@@ -105,11 +105,11 @@ Role.prototype.write = function(object, newDesc, callback) {
     var obj = docs[0];
 
     if (typeof obj.access['w'][self.name] === 'undefined') {
-      if (typeof self.extends === 'undefined')
+      if (typeof self.ext === 'undefined')
         return callback({err: 'ROLE_NOT_AUTHORIZED', msg: 'Error: Current role is not authorized to write object \'' + obj.name + '\''});
       var perm = false;
-      for (var i = 0; i < self.extends; i++) {
-        if (typeof obj.access.w[self.extends[i]] !== 'undefined') {
+      for (var i = 0; i < self.ext; i++) {
+        if (typeof obj.access.w[self.ext[i]] !== 'undefined') {
           perm = true;
           break;
         }

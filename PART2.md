@@ -18,7 +18,7 @@
 
     name: <string> <unique>
     desc: <string>
-    extends: [<inherited from superior roles:string>]
+    ext: [<inherited from superior roles:string>]
     conflicts: [<conflicting roles:string>]
 
 ### Methods
@@ -37,7 +37,7 @@
 
 0. grant(object, role, perm)
 0. recind(object, role, perm)
-0. newRole(name, desc, extends)
+0. newRole(name, desc, ext)
 0. removeRole(name)
 0. bindRole(user, role)
 0. unbindRole(user, role)

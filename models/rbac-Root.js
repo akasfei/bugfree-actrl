@@ -1,13 +1,14 @@
 var Db = require('../lib/Db.js');
+var Role = require('../models/rbac-Role.js');
 var db = new Db();
 
 function Root() {
   return this;
 }
 
-Root.prototype.newRole = function(name, desc, extends, callback) {
+Root.prototype.newRole = function(name, desc, ext, callback) {
   var self = this;
-  var role = new Role(name, desc, extends);
+  var role = new Role({name: name, desc: desc});
   role.create(function (err) {
     return callback(err);
   });
@@ -30,13 +31,13 @@ Root.prototype.grant = function(subject, object, right, callback) {
         return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + subject + '\' not found.'});
       var role = docs[0];
 
-      if (typeof role.extends !== 'undefined') {
-        if (role.extends.indexOf('root') >= 0)
+      if (typeof role.ext !== 'undefined') {
+        if (role.ext.indexOf('root') >= 0)
           return callback({err: 'SUBJECT_HAS_PERM', msg: 'Error: You have already granted subject \'' + right + '\' permission.'});
-        role.extends.push('root');
+        role.ext.push('root');
       }
       else
-        role.extends = ['root'];
+        role.ext = ['root'];
 
       db.update({name: role.name}, role, 'Roles', function (err) {
         return callback(err);
@@ -72,13 +73,13 @@ Root.prototype.recind = function(subject, object, right, callback) {
         return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + subject + '\' not found.'});
       var role = docs[0];
 
-      if (typeof role.extends !== 'undefined') {
+      if (typeof role.ext !== 'undefined') {
         var index;
-        if ( ( index = role.extends.indexOf('root') ) < 0)
+        if ( ( index = role.ext.indexOf('root') ) < 0)
           return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target subject does not have \'' + right + '\' permission.'});
-        role.extends.splice(index, 1);
-        if (role.extends.length < 1)
-          delete role.extends;
+        role.ext.splice(index, 1);
+        if (role.ext.length < 1)
+          delete role.ext;
       }
       else
         return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target subject does not have \'' + right + '\' permission.'});
@@ -118,7 +119,7 @@ Root.prototype.bindRole = function(user, role, callback) {
     if (typeof usr.roles !== 'undefined') {
       if (usr.roles.indexOf(role) >= 0)
         return callback({err: 'USER_HAS_ROLE', msg: 'Error: You have already binded user with role \'' + role + '\'.'});
-      db.find({name: role}, 'Roles', {limit: 1} function (err, roledoc) {
+      db.find({name: role}, 'Roles', {limit: 1}, function (err, roledoc) {
         if (err)
           return callback(err);
         if (roledoc.length < 1)
@@ -138,7 +139,7 @@ Root.prototype.bindRole = function(user, role, callback) {
         });
       });
     } else {
-      db.find({name: role}, 'Roles', {limit: 1} function (err, roledoc) {
+      db.find({name: role}, 'Roles', {limit: 1}, function (err, roledoc) {
         if (err)
           return callback(err);
         if (roledoc.length < 1)
@@ -193,10 +194,10 @@ Root.prototype.extendRole = function(role, supRole, callback) {
       && r.conflicts.indexOf(supRole) >= 0)
       return callback({err: 'ROLE_CONFLICT', msg: 'Error: This role "' + role + '" conflicts with role to extend: "' + supRole + '"'}) 
 
-    if (typeof r.extends !== 'undefined') {
-      if (r.extends.indexOf(supRole) >= 0)
-        return callback({err: 'ROLE_ALREADY_EXTENDS', msg: 'Error: This role already extends role \'' + supRole + '\'.'});
-      db.find({name: supRole}, 'Roles', {limit: 1} function (err, srdoc) {
+    if (typeof r.ext !== 'undefined') {
+      if (r.ext.indexOf(supRole) >= 0)
+        return callback({err: 'ROLE_ALREADY_EXTENDS', msg: 'Error: This role already ext role \'' + supRole + '\'.'});
+      db.find({name: supRole}, 'Roles', {limit: 1}, function (err, srdoc) {
         if (err)
           return callback(err);
         if (srdoc.length < 1)
@@ -204,11 +205,11 @@ Root.prototype.extendRole = function(role, supRole, callback) {
 
         var sr = srdoc[0];
         if (typeof sr.conflicts === 'undefined') {
-          r.extends.push(role);
+          r.ext.push(role);
         } else {
-          for (var i = 0; i < r.extends.length; i++) {
-            if (sr.conflicts.indexOf(r.extends[i]) >= 0)
-              return callback({err: 'ROLE_CONFLICT', msg: 'Error: Extending "' + supRole + '" conflicts with current extended role "' + r.extends[i] + '"'})
+          for (var i = 0; i < r.ext.length; i++) {
+            if (sr.conflicts.indexOf(r.ext[i]) >= 0)
+              return callback({err: 'ROLE_CONFLICT', msg: 'Error: Extending "' + supRole + '" conflicts with current extended role "' + r.ext[i] + '"'})
           }
         }
         db.update({name: role}, r, 'Roles', function (err) {
@@ -216,12 +217,12 @@ Root.prototype.extendRole = function(role, supRole, callback) {
         });
       });
     } else {
-      db.find({name: supRole}, 'Roles', {limit: 1} function (err, srdoc) {
+      db.find({name: supRole}, 'Roles', {limit: 1}, function (err, srdoc) {
         if (err)
           return callback(err);
         if (srdoc.length < 1)
           return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + supRole + '\' not found.'});
-        r.extends = [supRole];
+        r.ext = [supRole];
         db.update({name: role}, r, 'Roles', function (err) {
           return callback(err);
         });
@@ -239,10 +240,10 @@ Root.prototype.reduceRole = function(role, supRole, callback) {
       return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + role + '\' not found.'});
     var r = docs[0];
 
-    if (typeof r.extends !== 'undefined') {
+    if (typeof r.ext !== 'undefined') {
       var index;
-      if ( (index = r.extends.indexOf(supRole)) >= 0 )
-        r.extends.splice(index, 1);
+      if ( (index = r.ext.indexOf(supRole)) >= 0 )
+        r.ext.splice(index, 1);
       else
         return callback({err: 'ROLE_NOT_EXTENDS', msg: 'Error: This role does not extend role "' + supRole + '".'}); 
     }

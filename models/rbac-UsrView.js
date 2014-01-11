@@ -15,6 +15,7 @@ UsrView.prototype.render = function() {
            .replace(/\$roles/g, roles)
            .replace(/\$access/g, this.btns.access)
            .replace(/\$remove/g, this.btns.remove);
+  return res;
 };
 
 UsrView.prototype.view = '<tr data-name="$name"><td>$name</td><td>$desc</td><td>$roles</td><td>$access $remove</td></tr>';
