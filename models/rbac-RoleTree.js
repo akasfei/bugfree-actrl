@@ -59,6 +59,7 @@ RoleTree.prototype.parse = function(callback) {
           }
         }
       }
+      self.hash[role.name] = -1;
       if (typeof thisExt.children === 'undefined' || thisExt.children.length < 1)
         thisExt.children = [parseRole(role)];
       else
@@ -77,6 +78,7 @@ var findRole = function(roles, name) {
     if (name === roles[i].name)
       return roles.splice(i, 1)[0];
   }
+  return {name: 'NOT_FOUND', desc: 'NOT_FOUND'};
 };
 
 var parseRole = function(role) {
