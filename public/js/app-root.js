@@ -91,14 +91,13 @@
 
     $('.role-list').on('click', '.roles-reduce', function (e) {
       var self = $(this);
-      var ext = prompt('Enter the name of the role to reduce.');
-      if (ext.length < 1) {
-        $('.float-msg').msg({msg: 'Error: Invalid role name.'});
+      var ext = confirm('Reduce this role?');
+      if (!ext) {
         return;
       }
       var rdata = {
-        r: self.parents('tr').attr('data-name'), 
-        sr: ext
+        r: self.parents('tr').attr('data-name')
+        // sr: ext
       };
       $.ajax({
         url: '/rbac/root/roles/reduce',
@@ -110,7 +109,7 @@
             $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
             return;
           }
-          $('.float-msg').msg({msg: 'Successfully reduced role "' + rdata.r + '" from "' + rdata.sr + '".', style: 'success'});
+          $('.float-msg').msg({msg: 'Successfully reduced role "' + rdata.r + '".', style: 'success'});
           refreshRoleList();
         }
       });

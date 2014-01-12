@@ -1,5 +1,9 @@
 !function ($) {
   $(function(){
+    $('body').on('click', 'a[href=#]', function (e) {
+      e.preventDefault();
+    });
+
     $('.float-msg').on('click', '.float-msg-dismiss', function (e) {
       $('.float-msg').msg('hide');
     });

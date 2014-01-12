@@ -237,9 +237,8 @@ module.exports = function (app) {
 
   app.get('/rbac/root/roles/reduce', function (req, res) {
     if (typeof req.session.root !== 'undefined') {
-      if ( typeof req.query.r !== 'undefined' 
-        && typeof req.query.sr !== 'undefined' ) {
-        root.reduceRole(req.query.r, req.query.sr, function (err) {
+      if ( typeof req.query.r !== 'undefined' ) {
+        root.reduceRole(req.query.r, function (err) {
           if (err)
             return res.send(err);
           return res.status(204).send();

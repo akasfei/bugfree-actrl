@@ -18,7 +18,7 @@
 
     name: <string> <unique>
     desc: <string>
-    ext: [<inherited from superior roles:string>]
+    ext: [<link of superior roles:string>] or [[<link of superior roles:string>]]
     conflicts: [<conflicting roles:string>]
 
 ### Methods
