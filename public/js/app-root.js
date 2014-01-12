@@ -116,6 +116,27 @@
       });
     });
 
+    $('.role-list').on('click', '.roles-remove', function (e) {
+      var self = $(this);
+      var role = self.parents('tr').attr('data-name');
+      if ( !confirm('Comfirm removal of role "' + role + '"?') )
+        return;
+      $.ajax({
+        url: '/rbac/root/roles/remove',
+        method: 'GET',
+        data: {n: role},
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully removed role "' + role + '".', style: 'success'});
+          refreshRoleList();
+        }
+      });
+    });
+
 /*
         ****        ****
         ****        ****
@@ -191,6 +212,64 @@
       ****************
       ****************
 */
+    $('.object-list').on('click', '.obj-access', function (e) {
+      var self = $(this);
+      refreshAccess(self.parents('tr').attr('data-name'), function (err) {
+        $('#obj-access-modal').modal('show');
+      });
+    });
+
+    $('.access-list').on('click', '.access-grant', function (e) {
+      var self = $(this);
+      var rights = self.text().toLowerCase();
+      var query = {
+        t: self.parents('tr').attr('data-name'),
+        o: $('.access-list').attr('data-obj'),
+        r: rights
+      }
+      $.ajax({
+        url: '/rbac/root/roles/grant',
+        method: 'GET',
+        data: query,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully granted right "' + rights + '" to role "' + query.t + '".', style: 'success'});
+          refreshAccess(query.o);
+        }
+      });
+    });
+
+    $('.access-list').on('click', '.access-recind', function (e) {
+      var self = $(this);
+      var rights = self.text().toLowerCase();
+      var query = {
+        t: self.parents('tr').attr('data-name'),
+        o: $('.access-list').attr('data-obj'),
+        r: rights
+      }
+      $.ajax({
+        url: '/rbac/root/roles/recind',
+        method: 'GET',
+        data: query,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully recinded right "' + rights + '" from role "' + query.t + '".', style: 'success'});
+          refreshAccess(query.o);
+        }
+      });
+    });
+
+    $('#obj-access-refresh').on('click', function (e) {
+      refreshAccess($('.access-list').attr('data-obj'));
+    });
 
   }); // END $(function())
 
@@ -228,6 +307,27 @@
       }
     });
   };
+
+  var refreshAccess = function (object, callback) {
+    $('.access-list').attr('data-obj', '');
+    $('#modal-obj-name').text(object)
+    $.ajax({
+      url: '/rbac/root/objects/access',
+      method: 'GET',
+      data: {n: object},
+      dataType: 'json',
+      success: function (data, status, xhr) {
+        if (data && data.err) {
+          $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+          return callback(data);
+        }
+        $('.access-list > tbody').html(data.list.join('\n'));
+        $('.access-list').attr('data-obj', object);
+        if (typeof callback !== 'undefined')
+          return callback();
+      }
+    });
+  }
 
   var refreshUserList = function () {
     $.ajax({

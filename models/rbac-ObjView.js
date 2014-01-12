@@ -24,7 +24,7 @@ ObjView.prototype.renderAccess = function (role) {
     if (typeof this.access[this.permissions[i]][role.name] === 'undefined') {
       if (typeof role.ext !== 'undefined' && role.ext.length > 0) {
         for (var j = 0; j < role.ext.length; j++) {
-          if (typeof this.access[this.permissions[j]][role.ext[j]] !== 'undefined') {
+          if (typeof this.access[this.permissions[i]][role.ext[j]] !== 'undefined') {
             perm = true;
             break;
           }

@@ -1,3 +1,4 @@
+var Db = require('../lib/Db.js');
 var User = require('../models/rbac-User.js');
 var Role = require('../models/rbac-Role.js');
 var Root = require('../models/rbac-Root.js');
@@ -11,7 +12,7 @@ module.exports = function (app) {
       role.new(req.body.name, req.body.desc, function (err, newObj) {
         if (err)
           return res.send(err);
-        res.status(201).send();
+        res.status(204).send();
       });
     } else {
       return res.send({err: 'Error: No active sessions.'});

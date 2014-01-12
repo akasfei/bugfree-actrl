@@ -37,9 +37,24 @@ User.prototype.auth = function(callback) {
   });
 };
 
+User.prototype.refresh = function(callback) {
+  var self = this;
+  db.find({name: this.name}, 'Users', {limit: 1}, function (err, docs) {
+    if (err)
+      return callback(err);
+    else if (docs.length < 1) {
+      return callback({err: 'USER_NOT_FOUND', msg: 'Error: Invalid username.'});
+    } else {
+      self.desc = docs[0].desc;
+      self.roles = docs[0].roles;
+      return callback();
+    }
+  });
+};
+
 User.prototype.createSession = function(role, callback) {
-  if ( typeof this.roles !== 'undefined' 
-    && this.roles.indexOf(role) >= 0);
+  if ( typeof this.roles === 'undefined' 
+    && this.roles.indexOf(role) < 0)
     return callback({err: 'NO_ROLE', msg: 'Error: This user has no role available.'});
   db.find({name: role}, 'Roles', {limit: 1}, function (err, docs) {
     if (err)

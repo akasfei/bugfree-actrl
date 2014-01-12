@@ -30,8 +30,15 @@ module.exports = function (app) {
   });
 
   app.get('/rbac/status', function (req, res) {
-    if (typeof req.session.user !== 'undefined')
-      res.send({name: req.session.user.name, desc: req.session.user.desc});
+    if (typeof req.session.user !== 'undefined') {
+      var user = new User(req.session.user);
+      user.refresh(function () {
+        var tosend = {name: user.name, desc: user.desc, roles: user.roles};
+        if (typeof req.session.role !== 'undefined')
+          tosend.session = req.session.role.name;
+        res.send(tosend);
+      })
+    }
     else
       res.status(204).send();
   });

@@ -33,7 +33,7 @@ Root.prototype.grant = function(subject, object, right, callback) {
 
       if (typeof role.ext !== 'undefined') {
         if (role.ext.indexOf('root') >= 0)
-          return callback({err: 'SUBJECT_HAS_PERM', msg: 'Error: You have already granted subject \'' + right + '\' permission.'});
+          return callback({err: 'ROLE_HAS_PERM', msg: 'Error: You have already granted role \'' + right + '\' permission.'});
         role.ext.push('root');
       }
       else
@@ -52,11 +52,11 @@ Root.prototype.grant = function(subject, object, right, callback) {
       var obj = docs[0];
 
       if (typeof obj.access[right][subject] !== 'undefined')
-        return callback({err: 'SUBJECT_HAS_PERM', msg: 'Error: You have already granted subject \'' + right + '\' permission.'});
+        return callback({err: 'ROLE_HAS_PERM', msg: 'Error: You have already granted role \'' + right + '\' permission.'});
       // Record time for future reference.
       obj.access[right][subject] = new Date().getTime();
       
-      db.update({name: obj.name}, obj, 'Objects', function (err) {
+      db.update({name: obj.name}, obj, 'Objects_rbac', function (err) {
         return callback(err);
       });
     });
@@ -76,13 +76,13 @@ Root.prototype.recind = function(subject, object, right, callback) {
       if (typeof role.ext !== 'undefined') {
         var index;
         if ( ( index = role.ext.indexOf('root') ) < 0)
-          return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target subject does not have \'' + right + '\' permission.'});
+          return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target role does not have \'' + right + '\' permission.'});
         role.ext.splice(index, 1);
         if (role.ext.length < 1)
           delete role.ext;
       }
       else
-        return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target subject does not have \'' + right + '\' permission.'});
+        return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target role does not have \'' + right + '\' permission.'});
 
       db.update({name: role.name}, role, 'Roles', function (err) {
         return callback(err);
@@ -97,10 +97,10 @@ Root.prototype.recind = function(subject, object, right, callback) {
       var obj = docs[0];
 
       if (typeof obj.access[right][subject] === 'undefined')
-        return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target subject does not have \'' + right + '\' permission.'});
+        return callback({err: 'TARGET_NO_PERM', msg: 'Error: Target role does not have \'' + right + '\' permission.'});
       delete obj.access[right][subject];
       
-      db.update({name: obj.name}, obj, 'Objects', function (err) {
+      db.update({name: obj.name}, obj, 'Objects_rbac', function (err) {
         return callback(err);
       });
     });
