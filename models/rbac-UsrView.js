@@ -13,7 +13,7 @@ UsrView.prototype.render = function() {
   res = res.replace(/\$name/g, this.name)
            .replace(/\$desc/g, this.desc)
            .replace(/\$roles/g, roles)
-           .replace(/\$access/g, this.btns.access)
+           .replace(/\$access/g, this.btns.bind + ' ' + this.btns.unbind)
            .replace(/\$remove/g, this.btns.remove);
   return res;
 };
@@ -21,7 +21,8 @@ UsrView.prototype.render = function() {
 UsrView.prototype.view = '<tr data-name="$name"><td>$name</td><td>$desc</td><td>$roles</td><td>$access $remove</td></tr>';
 
 UsrView.prototype.btns = {
-  access: '<a href="#" class="btn btn-sm btn-warning usr-roles-edit"><i class="glyphicon glyphicon-certificate"></i></a>',
+  bind: '<a href="#" class="btn btn-sm btn-success user-bind"><i class="glyphicon glyphicon-plus-sign"></i></a>',
+  unbind: '<a href="#" class="btn btn-sm btn-warning user-unbind"><i class="glyphicon glyphicon-minus-sign"></i></a>',
   remove: '<a href="#" class="btn btn-sm btn-danger usr-remove"><i class="glyphicon glyphicon-remove"></i></a>'
 };
 

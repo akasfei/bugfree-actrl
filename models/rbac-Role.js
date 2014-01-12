@@ -17,7 +17,16 @@ Role.prototype.create = function(callback) {
 };
 
 Role.prototype.new = function(objname, desc, callback) {
-  if (typeof this.ext === 'undefined' || this.ext.indexOf('root') < 0)
+  var isroot = false;
+  if (typeof this.ext !== 'undefined') {
+    if (this.ext.indexOf('root') >= 0)
+      isroot = true;
+    else {
+      
+    }
+  }
+    
+  if (!isroot)
     return callback({err: 'ROLE_UNAUTHORIZED', msg: 'Error: Role is not authorized to create objects.'});
 
   var object = {

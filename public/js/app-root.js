@@ -22,6 +22,21 @@
       });
     });
 
+    $('.object-list-refresh').on('click', function (e) { refreshObjList(); });
+    $('.user-list-refresh').on('click', function (e) { refreshUserList(); });
+    $('.role-list-refresh').on('click', function (e) { refreshRoleList(); });
+
+/*
+        ****************
+        ****************
+        ****        ****
+        ****************
+        ****************
+        ****  ******
+        ****    ******
+        ****      ******
+ */
+
     $('#new_rol_submit').on('click', function (e) {
       var role = {
         role_name: $('#new_rol_name').val(),
@@ -46,7 +61,149 @@
         }
       });
     });
-  });
+
+    $('.role-list').on('click', '.roles-extend', function (e) {
+      var self = $(this);
+      var ext = prompt('Enter the name of the role to extend.');
+      if (ext.length < 1) {
+        $('.float-msg').msg({msg: 'Error: Invalid role name.'});
+        return;
+      }
+      var rdata = {
+        r: self.parents('tr').attr('data-name'), 
+        sr: ext
+      };
+      $.ajax({
+        url: '/rbac/root/roles/extend',
+        method: 'GET',
+        data: rdata,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully extended role "' + rdata.sr + '" to "' + rdata.r + '".', style: 'success'});
+          refreshRoleList();
+        }
+      });
+    });
+
+    $('.role-list').on('click', '.roles-reduce', function (e) {
+      var self = $(this);
+      var ext = prompt('Enter the name of the role to reduce.');
+      if (ext.length < 1) {
+        $('.float-msg').msg({msg: 'Error: Invalid role name.'});
+        return;
+      }
+      var rdata = {
+        r: self.parents('tr').attr('data-name'), 
+        sr: ext
+      };
+      $.ajax({
+        url: '/rbac/root/roles/reduce',
+        method: 'GET',
+        data: rdata,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully reduced role "' + rdata.r + '" from "' + rdata.sr + '".', style: 'success'});
+          refreshRoleList();
+        }
+      });
+    });
+
+/*
+        ****        ****
+        ****        ****
+        ****        ****
+        ****        ****
+        ****        ****
+        ****        ****
+        ****************
+        ****************
+ */
+
+    $('.user-list').on('click', '.user-bind', function (e) {
+      var self = $(this);
+      var role = prompt('Enter the name of the role to bind.');
+      if (role.length < 1) {
+        $('.float-msg').msg({msg: 'Error: Invalid role name.'});
+        return;
+      }
+      var bdata = {
+        u: self.parents('tr').attr('data-name'), 
+        r: role
+      };
+      $.ajax({
+        url: '/rbac/root/roles/bind',
+        method: 'GET',
+        data: bdata,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully binded role "' + bdata.r + '" to user "' + bdata.u + '".', style: 'success'});
+          refreshUserList();
+        }
+      });
+    });
+
+    $('.user-list').on('click', '.user-unbind', function (e) {
+      var self = $(this);
+      var role = prompt('Enter the name of the role to unbind.');
+      if (role.length < 1) {
+        $('.float-msg').msg({msg: 'Error: Invalid role name.'});
+        return;
+      }
+      var bdata = {
+        u: self.parents('tr').attr('data-name'), 
+        r: role
+      };
+      $.ajax({
+        url: '/rbac/root/roles/unbind',
+        method: 'GET',
+        data: bdata,
+        dataType: 'json',
+        success: function (data, status, xhr) {
+          if (data && data.err) {
+            $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+            return;
+          }
+          $('.float-msg').msg({msg: 'Successfully unbinded role "' + bdata.r + '" from user "' + bdata.u + '".', style: 'success'});
+          refreshUserList();
+        }
+      });
+    });
+
+/*
+      ****************
+      ****************
+      ****        ****
+      ****        ****
+      ****        ****
+      ****        ****
+      ****************
+      ****************
+*/
+
+  }); // END $(function())
+
+/*
+        ****** *************
+        ******* ************
+        ****      ***   ****
+        ****        **  ****
+        ****  **        ****
+        ****   ***      ****
+        ************ *******
+        ************* ******
+ */
 
   var refreshObjList = function () {
     $.ajax({

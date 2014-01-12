@@ -13,7 +13,7 @@ RolView.prototype.render = function() {
   res = res.replace(/\$name/g, this.name)
            .replace(/\$desc/g, this.desc)
            .replace(/\$ext/g, ext)
-           .replace(/\$access/g, this.btns.access)
+           .replace(/\$access/g, this.btns.extend + ' ' + this.btns.reduce)
            .replace(/\$remove/g, this.btns.remove);
   return res;
 };
@@ -21,7 +21,8 @@ RolView.prototype.render = function() {
 RolView.prototype.view = '<tr data-name="$name"><td>$name</td><td>$desc</td><td>$ext</td><td>$access $remove</td></tr>';
 
 RolView.prototype.btns = {
-  access: '<a href="#" class="btn btn-sm btn-warning roles-edit"><i class="glyphicon glyphicon-certificate"></i></a>',
+  extend: '<a href="#" class="btn btn-sm btn-success roles-extend"><i class="glyphicon glyphicon-plus-sign"></i></a>',
+  reduce: '<a href="#" class="btn btn-sm btn-warning roles-reduce"><i class="glyphicon glyphicon-minus-sign"></i></a>',
   remove: '<a href="#" class="btn btn-sm btn-danger roles-remove"><i class="glyphicon glyphicon-remove"></i></a>'
 };
 

@@ -37,7 +37,7 @@ module.exports = function (app) {
         if (err) {
           res.send(err);
         } else {
-          res.status(201).send();
+          res.status(204).send();
         }
       });
     } else {
@@ -51,7 +51,7 @@ module.exports = function (app) {
         if (err) {
           res.send(err);
         } else {
-          res.status(201).send();
+          res.status(204).send();
         }
       });
     } else {
@@ -161,7 +161,7 @@ module.exports = function (app) {
         root.grant(req.query.t, req.query.o, req.query.r, function (err) {
           if (err)
             return res.send(err);
-          return res.status(201).send();
+          return res.status(204).send();
         });
       } else
         return res.status(400).send();
@@ -178,7 +178,7 @@ module.exports = function (app) {
         root.recind(req.query.t, req.query.o, req.query.r, function (err) {
           if (err)
             return res.send(err);
-          return res.status(201).send();
+          return res.status(204).send();
         });
       } else
         return res.status(400).send();
@@ -194,7 +194,7 @@ module.exports = function (app) {
         root.bindRole(req.query.u, req.query.r, function (err) {
           if (err)
             return res.send(err);
-          return res.status(201).send();
+          return res.status(204).send();
         });
       } else
         return res.status(400).send();
@@ -210,7 +210,7 @@ module.exports = function (app) {
         root.unbindRole(req.query.u, req.query.r, function (err) {
           if (err)
             return res.send(err);
-          return res.status(201).send();
+          return res.status(204).send();
         });
       } else
         return res.status(400).send();
@@ -223,10 +223,10 @@ module.exports = function (app) {
     if (typeof req.session.root !== 'undefined') {
       if ( typeof req.query.r !== 'undefined' 
         && typeof req.query.sr !== 'undefined' ) {
-        root.bindRole(req.query.r, req.query.sr, function (err) {
+        root.extendRole(req.query.r, req.query.sr, function (err) {
           if (err)
             return res.send(err);
-          return res.status(201).send();
+          return res.status(204).send();
         });
       } else
         return res.status(400).send();
@@ -239,10 +239,10 @@ module.exports = function (app) {
     if (typeof req.session.root !== 'undefined') {
       if ( typeof req.query.r !== 'undefined' 
         && typeof req.query.sr !== 'undefined' ) {
-        root.bindRole(req.query.r, req.query.sr, function (err) {
+        root.reduceRole(req.query.r, req.query.sr, function (err) {
           if (err)
             return res.send(err);
-          return res.status(201).send();
+          return res.status(204).send();
         });
       } else
         return res.status(400).send();

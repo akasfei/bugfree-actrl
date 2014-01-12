@@ -194,39 +194,53 @@ Root.prototype.extendRole = function(role, supRole, callback) {
       && r.conflicts.indexOf(supRole) >= 0)
       return callback({err: 'ROLE_CONFLICT', msg: 'Error: This role "' + role + '" conflicts with role to extend: "' + supRole + '"'}) 
 
-    if (typeof r.ext !== 'undefined') {
+    if (typeof r.ext !== 'undefined' && r.ext.length > 0) {
       if (r.ext.indexOf(supRole) >= 0)
         return callback({err: 'ROLE_ALREADY_EXTENDS', msg: 'Error: This role already ext role \'' + supRole + '\'.'});
-      db.find({name: supRole}, 'Roles', {limit: 1}, function (err, srdoc) {
-        if (err)
+      if (supRole === 'root') {
+        r.ext.push('root');
+        db.update({name: role}, r, 'Roles', function (err) {
           return callback(err);
-        if (srdoc.length < 1)
-          return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + supRole + '\' not found.'});
+        });
+      } else {
+        db.find({name: supRole}, 'Roles', {limit: 1}, function (err, srdoc) {
+          if (err)
+            return callback(err);
+          if (srdoc.length < 1)
+            return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + supRole + '\' not found.'});
 
-        var sr = srdoc[0];
-        if (typeof sr.conflicts === 'undefined') {
-          r.ext.push(role);
-        } else {
-          for (var i = 0; i < r.ext.length; i++) {
-            if (sr.conflicts.indexOf(r.ext[i]) >= 0)
-              return callback({err: 'ROLE_CONFLICT', msg: 'Error: Extending "' + supRole + '" conflicts with current extended role "' + r.ext[i] + '"'})
+          var sr = srdoc[0];
+          if (typeof sr.conflicts === 'undefined') {
+            r.ext.push(supRole);
+          } else {
+            for (var i = 0; i < r.ext.length; i++) {
+              if (sr.conflicts.indexOf(r.ext[i]) >= 0)
+                return callback({err: 'ROLE_CONFLICT', msg: 'Error: Extending "' + supRole + '" conflicts with current extended role "' + r.ext[i] + '"'})
+            }
           }
-        }
-        db.update({name: role}, r, 'Roles', function (err) {
-          return callback(err);
+          db.update({name: role}, r, 'Roles', function (err) {
+            return callback(err);
+          });
         });
-      });
+      }
     } else {
-      db.find({name: supRole}, 'Roles', {limit: 1}, function (err, srdoc) {
-        if (err)
-          return callback(err);
-        if (srdoc.length < 1)
-          return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + supRole + '\' not found.'});
-        r.ext = [supRole];
+      if (supRole === 'root') {
+        r.ext = ['root'];
         db.update({name: role}, r, 'Roles', function (err) {
           return callback(err);
         });
-      });
+      } else {
+        db.find({name: supRole}, 'Roles', {limit: 1}, function (err, srdoc) {
+          if (err)
+            return callback(err);
+          if (srdoc.length < 1)
+            return callback({err: 'ROLE_NOT_FOUND', msg: 'Error: Role \'' + supRole + '\' not found.'});
+          r.ext = [supRole];
+          db.update({name: role}, r, 'Roles', function (err) {
+            return callback(err);
+          });
+        });
+      }
     }
   });
 };
