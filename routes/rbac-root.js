@@ -6,6 +6,7 @@ var ObjView = require('../models/rbac-ObjView.js');
 var AccView = require('../models/rbac-AccView.js');
 var UsrView = require('../models/rbac-UsrView.js');
 var RolView = require('../models/rbac-RolView.js');
+var RoleTree = require('../models/rbac-RoleTree.js');
 
 var root = new Root();
 var db = new Db();
@@ -245,6 +246,17 @@ module.exports = function (app) {
         });
       } else
         return res.status(400).send();
+    } else {
+      return res.status(403).send();
+    }
+  });
+
+  app.get('/rbac/root/roles/graph', function (req, res) {
+    if (typeof req.session.root !== 'undefined') {
+      var roleTree = new RoleTree();
+      roleTree.parse(function () {
+        res.send({html: roleTree.render()});
+      });
     } else {
       return res.status(403).send();
     }

@@ -366,7 +366,28 @@
           $('.role-list > tbody').html('<tr><td colspan="4">No roles available.</td></tr>');
           return;
         }
+        refreshRoleGraph();
         $('.role-list > tbody').html(data.roles.join('\n'));
+      },
+      complete: function (xhr, status) {
+        if (xhr.status == 403) {
+          $('.float-msg').msg({msg: 'Access denied. Authenticate first.'});
+        }
+      }
+    });
+  };
+
+  var refreshRoleGraph = function () {
+    $.ajax({
+      url: '/rbac/root/roles/graph',
+      method: 'GET',
+      dataType: 'json',
+      success: function (data, status, xhr) {
+        if (data && data.err) {
+          $('.float-msg').msg({msg: data.err + (data.msg ? '\n' + data.msg: '')});
+          return;
+        }
+        $('.role-graph-container > .tree').html(data.html);
       },
       complete: function (xhr, status) {
         if (xhr.status == 403) {
