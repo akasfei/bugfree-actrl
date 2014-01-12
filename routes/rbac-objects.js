@@ -20,7 +20,7 @@ module.exports = function (app) {
   });
 
   app.get('/rbac/objects/list', function (req, res) {
-    if (typeof req.session.subject !== 'undefined') {
+    if (typeof req.session.role !== 'undefined') {
       var db = new Db();
       db.find({}, 'Objects_rbac', {sort: {'_id': '1'}}, function (err, objList) {
         if (err) {
@@ -56,7 +56,7 @@ module.exports = function (app) {
 
   app.post('/rbac/objects/write', function (req, res) {
     if (typeof req.session.role !== 'undefined') {
-      var role = new Role(req.session.role.name);
+      var role = new Role(req.session.role);
       role.write(req.body.obj_name, req.body.obj_new_desc, function (err) {
         if (err)
           return res.send(err);
@@ -69,7 +69,7 @@ module.exports = function (app) {
 
   app.get('/rbac/objects/remove', function (req, res) {
     if (typeof req.session.role !== 'undefined') {
-      var role = new Role(req.session.role.name);
+      var role = new Role(req.session.role);
       role.remove(req.query.n, function (err) {
         if (err)
           return res.send(err);

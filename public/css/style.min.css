@@ -41,7 +41,7 @@ footer.signature {
   display: block;
 }
 .subject-info.active > .subject-login,
-.user-info-active > .user-login {
+.user-info.active > .user-login {
   display: none;
 }
 .mono {

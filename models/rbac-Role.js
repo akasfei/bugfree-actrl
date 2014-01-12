@@ -22,7 +22,7 @@ Role.prototype.new = function(objname, desc, callback) {
     if (this.ext.indexOf('root') >= 0)
       isroot = true;
     else {
-      
+
     }
   }
     
@@ -61,7 +61,7 @@ Role.prototype.remove = function(object, callback) {
       if (typeof self.ext === 'undefined')
         return callback({err: 'ROLE_NOT_AUTHORIZED', msg: 'Error: Current role is not authorized to control object \'' + obj.name + '\''});
       var perm = false;
-      for (var i = 0; i < self.ext; i++) {
+      for (var i = 0; i < self.ext.length; i++) {
         if (typeof obj.access.c[self.ext[i]] !== 'undefined') {
           perm = true;
           break;
@@ -90,7 +90,7 @@ Role.prototype.read = function(object, callback) {
       if (typeof self.ext === 'undefined')
         return callback({err: 'ROLE_NOT_AUTHORIZED', msg: 'Error: Current role is not authorized to read object \'' + object + '\''});
       var perm = false;
-      for (var i = 0; i < self.ext; i++) {
+      for (var i = 0; i < self.ext.length; i++) {
         if (typeof obj.access.r[self.ext[i]] !== 'undefined') {
           perm = true;
           break;
@@ -117,7 +117,7 @@ Role.prototype.write = function(object, newDesc, callback) {
       if (typeof self.ext === 'undefined')
         return callback({err: 'ROLE_NOT_AUTHORIZED', msg: 'Error: Current role is not authorized to write object \'' + obj.name + '\''});
       var perm = false;
-      for (var i = 0; i < self.ext; i++) {
+      for (var i = 0; i < self.ext.length; i++) {
         if (typeof obj.access.w[self.ext[i]] !== 'undefined') {
           perm = true;
           break;
